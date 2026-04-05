@@ -46,12 +46,12 @@
 		</cconfiguration>
 	</storageModule>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-		<project id="ESP8266-RTOS-OTA-DFU-AP.null.565609171" name="ESP8266-RTOS-OTA-DFU-AP"/>
+		<project id="ESP8266-RTOS-OTA-STA-D1_mini.null.565609171" name="ESP8266-RTOS-OTA-STA-D1_mini"/>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="refreshScope" versionNumber="2">
 		<configuration configurationName="Default">
-			<resource resourceType="PROJECT" workspacePath="/ESP8266-RTOS-OTA-DFU-AP"/>
+			<resource resourceType="PROJECT" workspacePath="/ESP8266-RTOS-OTA-STA-D1_mini"/>
 		</configuration>
 	</storageModule>
 	<storageModule moduleId="scannerConfiguration">
