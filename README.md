@@ -14,13 +14,21 @@ For the description on the project structure, check the [document](https://docs.
    Configuration in configuration tool menu `Example Configuration`.  
    SSID to connect to in menu option `WiFi SSID`.  
    Password in `WiFi Password`.  
-   Maximum retry in `Maximum retry`.  
+   Maximum retry in `Maximum retry`. 0 (default) - infinite.  
 3. OTA updates using Web interface.
 4. GPIO control using MQTT.  
    Broker URL in menu option `Broker URL`.  
    Broker username in `Broker username`.  
    Broker password in `Broker password`.  
    GPIOs are defined in app_gpio.c. D0-D4 are used as outputs. D5-D8 as inputs.
+
+| Input |  Pin open MQTT state  | Opposite state when connected to |
+|------:|:---------------------:|:--------------------------------:|
+| D5    |  Off                  | G                                |
+| D6    |  Off                  | G                                |
+| D7    |  Off                  | G                                |
+| D8    |  On                   | 3V3                              |
+
 
 ## Usage
 
