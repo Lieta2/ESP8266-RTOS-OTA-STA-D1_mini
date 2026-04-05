@@ -6,6 +6,7 @@
 #include "esp_log.h"
 #include "esp_system.h"
 
+extern bool wifi_connected;
 /**
  * Initialize the ESP8266 as an access point with configurations from the Kconfig.projbuild file.
  * 

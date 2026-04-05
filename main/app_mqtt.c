@@ -8,6 +8,7 @@
 */
 #include <stdbool.h>
 #include "app_mqtt.h"
+#include "app_sta.h"
 #include "app_gpio.h"
 #include "esp_err.h"
 #include "esp_event.h"
@@ -195,8 +196,11 @@ static void mqtt_event_handler(void *handler_args,
         break;
 
     case MQTT_EVENT_DISCONNECTED:
-	mqtt_connected = false;
+        mqtt_connected = false;
         ESP_LOGI(TAG, "Disconnected");
+        if (wifi_connected) {
+            esp_mqtt_client_reconnect(client);
+        }
         break;
 
     case MQTT_EVENT_PUBLISHED:
@@ -330,6 +334,7 @@ void mqtt_start(void)
         .lwt_msg = "offline",
         .lwt_qos = 1,
         .lwt_retain = 1,
+        .reconnect_timeout_ms = 5000,
     };
 
     client = esp_mqtt_client_init(&mqtt_cfg);

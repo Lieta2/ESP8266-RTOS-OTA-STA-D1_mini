@@ -37,7 +37,6 @@ void app_main()
     gpio_init_outputs();
     gpio_restore_states();
     gpio_init_inputs();
-    mqtt_start();
 
     xTaskCreate(gpio_event_task, "gpio_event", 4096, NULL, 5, NULL);
 }
