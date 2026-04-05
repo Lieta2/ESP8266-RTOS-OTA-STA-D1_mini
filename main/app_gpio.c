@@ -53,7 +53,7 @@ typedef struct {
 } gpio_state_t;
 
 static QueueHandle_t gpio_evt_queue;
-static int last_state[GPIO_NUM_MAX];
+
 
 const char* gpio_to_name(gpio_num_t pin)
 {
@@ -115,6 +115,10 @@ void gpio_init_outputs(void)
     }
 }
 
+static int pending_state[GPIO_NUM_MAX];
+static int stable_state[GPIO_NUM_MAX];
+static int64_t last_change_time[GPIO_NUM_MAX];
+
 void gpio_init_inputs(void)
 {
     gpio_evt_queue = xQueueCreate(16, sizeof(gpio_num_t));
@@ -132,7 +136,7 @@ void gpio_init_inputs(void)
         gpio_num_t pin = input_pins[i];
         io_conf.pin_bit_mask = (1ULL << pin);
         ESP_ERROR_CHECK(gpio_config(&io_conf));
-        last_state[pin] = gpio_get_level(pin);
+        stable_state[pin] = pending_state[pin] = gpio_get_level(pin);
     }
 
     //special handling of GPIO_15
@@ -140,7 +144,7 @@ void gpio_init_inputs(void)
     io_conf.pull_down_en = 1;
     io_conf.pin_bit_mask = (1ULL << GPIO_NUM_15);
     ESP_ERROR_CHECK(gpio_config(&io_conf));
-    last_state[GPIO_NUM_15] = gpio_get_level(GPIO_NUM_15);
+    stable_state[GPIO_NUM_15] = pending_state[GPIO_NUM_15] = gpio_get_level(GPIO_NUM_15);
 
     ESP_ERROR_CHECK(gpio_install_isr_service(0));
 
@@ -177,25 +181,32 @@ void gpio_restore_states(void)
     nvs_close(nvs);
 }
 
+
 void gpio_event_task(void *arg)
 {
     gpio_num_t io_num;
 
-    static int64_t last_time[GPIO_NUM_MAX] = {0};
-
     while (1) {
-        if (xQueueReceive(gpio_evt_queue, &io_num, portMAX_DELAY)) {
-            int level = gpio_get_level(io_num);
-            int64_t now = esp_timer_get_time() / 1000; // ms
+        // drain queue quickly
+        while (xQueueReceive(gpio_evt_queue, &io_num, 0)) {
+            pending_state[io_num] = gpio_get_level(io_num);
+            last_change_time[io_num] = esp_timer_get_time() / 1000;
+        }
 
-            if (level != last_state[io_num]) {
-                if ((now - last_time[io_num]) > DEBOUNCE_MS) {
-                    last_state[io_num] = level;
-                    last_time[io_num] = now;
+        int64_t now = esp_timer_get_time() / 1000;
 
-                    publish_pin_state(gpio_to_name(io_num), level);
+        for (int io = 0; io < GPIO_NUM_MAX; io++) {
+            if (pending_state[io] != stable_state[io]) {
+
+                if ((now - last_change_time[io]) >= DEBOUNCE_MS) {
+
+                    stable_state[io] = pending_state[io];
+
+                    publish_pin_state(gpio_to_name(io), stable_state[io]);
                 }
             }
         }
+
+        vTaskDelay(10 / portTICK_PERIOD_MS); // small polling interval
     }
 }
