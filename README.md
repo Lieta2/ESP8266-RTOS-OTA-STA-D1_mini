@@ -10,13 +10,13 @@ For the description on the project structure, check the [document](https://docs.
 ## Features
 
 1. Station mode.  
-   Uses WPA3 authentication. Edit source app_sta.c to modify.
+   Uses WPA3 authentication. Edit source app_sta.c to modify.  
    Configuration in configuration tool menu `Example Configuration`.  
    SSID to connect to in menu option `WiFi SSID`.  
    Password in `WiFi Password`.  
    Maximum retry in `Maximum retry`.  
 3. OTA updates using Web interface.
-4. GPIO control using MQTT
+4. GPIO control using MQTT.  
    Broker URL in menu option `Broker URL`.  
    Broker username in `Broker username`.  
    Broker password in `Broker password`.  
