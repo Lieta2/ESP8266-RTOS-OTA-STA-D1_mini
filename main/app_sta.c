@@ -38,7 +38,7 @@ static void event_handler(void* arg, esp_event_base_t event_base,
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
         esp_wifi_connect();
     } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
-        if (s_retry_num < EXAMPLE_ESP_MAXIMUM_RETRY) {
+        if (EXAMPLE_ESP_MAXIMUM_RETRY == 0 || s_retry_num < EXAMPLE_ESP_MAXIMUM_RETRY) {
             esp_wifi_connect();
             s_retry_num++;
             ESP_LOGI(TAG, "retry to connect to the AP");
@@ -60,6 +60,9 @@ void wifi_init_sta(void)
     s_wifi_event_group = xEventGroupCreate();
 
     tcpip_adapter_init();
+
+    // Configure hostname in Location -> Component config -> LWIP -> Local netif hostname
+    tcpip_adapter_set_hostname(TCPIP_ADAPTER_IF_STA, CONFIG_LWIP_LOCAL_HOSTNAME);
 
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
