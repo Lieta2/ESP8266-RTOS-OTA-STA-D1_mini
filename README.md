@@ -54,6 +54,10 @@ If an error message such as `Permission denied: '/dev/ttyACM1'` appears, run `su
 Similar to overriding the port when flashing, the port for the monitor can be modfied as well.
 See the [document](https://docs.espressif.com/projects/esp8266-rtos-sdk/en/latest/get-started/index.html#environment-variables) for more variables that can be specified.
 
+## Warning
+
+It is not possible to OTA update a device running Tasmota or esphome with this firmware. First flashing should be done through USB. Subsequent updates can be done OTA.
+
 ## License
 
 MIT
