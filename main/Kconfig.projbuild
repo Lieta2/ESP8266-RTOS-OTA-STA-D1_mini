@@ -12,21 +12,25 @@ menu "Example Configuration"
         help
             WiFi password (WPA or WPA2) for the example to use.
 
-    config ESP_MAX_STA_CONN
-        int "Maximal STA connections"
-        default 4
-        help
-            Max number of the STA connects to AP.
-
-    config APP_AM2302_GPIO
-        int "GPIO pin for the temperature/humidity sensor AM2302"
-        default 4
-        help
-            GPIO pin for the temperature/humidity sensor AM2302.
-
-    config APP_CDS_GPIO
-        int "GPIO pin for the light sensor SZH-SSBH-011"
+    config ESP_MAXIMUM_RETRY
+        int "Maximum retry"
         default 5
         help
-            GPIO pin for the light sensor SZH-SSBH-011.
+            Set the Maximum retry to avoid station reconnecting to the AP unlimited when the AP is really inexistent.
+
+    config BROKER_URL
+        string "Broker URL"
+        default "mqtt://mqtt.eclipse.org"
+        help
+            URL of the broker to connect to
+
+    config BROKER_USER
+        string "Broker username"
+        help
+            MQTT username
+
+    config BROKER_PASSWORD
+        string "Broker password"
+        help
+            MQTT password
 endmenu

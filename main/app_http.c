@@ -26,6 +26,8 @@ static const char * UPLOAD_FAIL = "Failed to upload image";
 
 extern esp_ota_firm_t ota_firm;
 
+static const char *TAG = "HTTP";
+
 esp_err_t get_handler(httpd_req_t * req)
 {
     httpd_resp_send(req, INDEX_PAGE, strlen(INDEX_PAGE));

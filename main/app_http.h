@@ -6,10 +6,6 @@
 #include "esp_http_server.h"
 #include "app_ota.h"
 
-#ifndef TAG
-#define TAG "APP"
-#endif
-
 /**
  * URI handler for root (/) GET request.
  * Respond with the webpage to upload an image.

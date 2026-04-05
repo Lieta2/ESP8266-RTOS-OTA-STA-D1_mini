@@ -1,6 +1,4 @@
-# The following five lines of boilerplate have to be in your project's
-# CMakeLists in this exact order for cmake to work correctly
-cmake_minimum_required(VERSION 3.5)
-
-include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-project(esp8266_ota_dfu)
+idf_component_register(SRCS "app_main.c"
+                            "app_sta.c"
+                            "app_http.c"
+                    INCLUDE_DIRS ".")

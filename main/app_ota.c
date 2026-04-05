@@ -1,6 +1,7 @@
 
 #include "app_ota.h"
 
+static const char *TAG = "OTA";
 
 esp_err_t init_ota(esp_ota_firm_t * ota_firm)
 {

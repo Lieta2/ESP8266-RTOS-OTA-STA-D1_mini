@@ -6,10 +6,6 @@
 #include "esp_system.h"
 #include "esp_ota_ops.h"
 
-#ifndef TAG
-#define TAG "APP"
-#endif
-
 typedef struct esp_ota_firm {
     esp_ota_handle_t handle; // Update handle for OTA related tasks
     esp_partition_t * updating; // OTA partition to update
