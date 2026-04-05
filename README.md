@@ -1,22 +1,26 @@
-# ESP8266-RTOS-OTA-DFU
-Implementation of the Over-The-Air Device-Firmware-Update on the ESP8266 running the ESP8266 RTOS SDK (based on FreeRTOS).
+# ESP8266-RTOS-OTA-STA-D1_mini
+Implementation of D1 mini GPIO control running the ESP8266 RTOS SDK (based on FreeRTOS).
 
 ## Requirements
 
 Make sure the development environment is set before building.
 For how to setup the tools, see the [Get Started](https://docs.espressif.com/projects/esp8266-rtos-sdk/en/latest/get-started/) document from Espressif.
-
-This project directory is expected to be in the `~/esp` directory along with the [*ESP8266_RTOS_SDK*](https://github.com/espressif/ESP8266_RTOS_SDK) and the *xtensa-lx106* toolchain since it is for the ESP8266 MCU.
-
-Example:
-```
-    \esp
-    |----ESP8266_RTOS_SDK/
-    |----xtensa-lx106-elf/
-    |----project/
-```
-
 For the description on the project structure, check the [document](https://docs.espressif.com/projects/esp8266-rtos-sdk/en/latest/api-guides/build-system.html#example-project).
+
+## Features
+
+1. Station mode.  
+   Uses WPA3 authentication. Edit source app_sta.c to modify.
+   Configuration in configuration tool menu `Example Configuration`.  
+   SSID to connect to in menu option `WiFi SSID`.  
+   Password in `WiFi Password`.  
+   Maximum retry in `Maximum retry`.  
+3. OTA updates using Web interface.
+4. GPIO control using MQTT
+   Broker URL in menu option `Broker URL`.  
+   Broker username in `Broker username`.  
+   Broker password in `Broker password`.  
+   GPIOs are defined in app_gpio.c. D0-D4 are used as outputs. D5-D8 as inputs.
 
 ## Usage
 
