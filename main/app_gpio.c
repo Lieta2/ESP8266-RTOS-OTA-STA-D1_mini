@@ -181,19 +181,21 @@ void gpio_event_task(void *arg)
 {
     gpio_num_t io_num;
 
+    bool pending_change = false;
     while (1) {
         // drain queue quickly
-        while (xQueueReceive(gpio_evt_queue, &io_num, 0)) {
+        while (xQueueReceive(gpio_evt_queue, &io_num, pending_change ? (10 / portTICK_PERIOD_MS) : portMAX_DELAY)) {
             pending_state[io_num] = gpio_get_level(io_num);
             last_change_time[io_num] = esp_timer_get_time() / 1000;
         }
 
         int64_t now = esp_timer_get_time() / 1000;
+        pending_change = false;
 
         for (int i = 0; i < NUM_INPUTS; i++) {
             gpio_num_t io = input_pins[i];
             if (pending_state[io] != stable_state[io]) {
-
+                pending_change = true;
                 if ((now - last_change_time[io]) >= DEBOUNCE_MS) {
 
                     stable_state[io] = pending_state[io];
@@ -202,6 +204,5 @@ void gpio_event_task(void *arg)
                 }
             }
         }
-        vTaskDelay(10 / portTICK_PERIOD_MS); // small polling interval
     }
 }
