@@ -151,12 +151,7 @@ void gpio_init_inputs(void)
     for (int i = 0; i < NUM_INPUTS; i++) {
         gpio_num_t pin = input_pins[i];
         ESP_ERROR_CHECK(gpio_isr_handler_add(pin, gpio_isr_handler, (void*)(uintptr_t)pin));
-    }
-
-    for (int i = 0; i < NUM_INPUTS; i++) {
-        ESP_ERROR_CHECK(
-            gpio_set_intr_type(input_pins[i], GPIO_INTR_ANYEDGE)
-        );
+        ESP_ERROR_CHECK(gpio_set_intr_type(input_pins[i], GPIO_INTR_ANYEDGE));
     }
 }
 
@@ -195,7 +190,8 @@ void gpio_event_task(void *arg)
 
         int64_t now = esp_timer_get_time() / 1000;
 
-        for (int io = 0; io < GPIO_NUM_MAX; io++) {
+        for (int i = 0; i < NUM_INPUTS; i++) {
+            gpio_num_t io = input_pins[i];
             if (pending_state[io] != stable_state[io]) {
 
                 if ((now - last_change_time[io]) >= DEBOUNCE_MS) {
@@ -206,7 +202,6 @@ void gpio_event_task(void *arg)
                 }
             }
         }
-
         vTaskDelay(10 / portTICK_PERIOD_MS); // small polling interval
     }
 }
