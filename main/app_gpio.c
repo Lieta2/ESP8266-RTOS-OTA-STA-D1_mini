@@ -181,12 +181,14 @@ void gpio_event_task(void *arg)
 {
     gpio_num_t io_num;
 
-    bool pending_change = false;
+    bool pending_change;
+    TickType_t delay = portMAX_DELAY;
     while (1) {
         // drain queue quickly
-        while (xQueueReceive(gpio_evt_queue, &io_num, pending_change ? (10 / portTICK_PERIOD_MS) : portMAX_DELAY)) {
+        while (xQueueReceive(gpio_evt_queue, &io_num, delay)) {
             pending_state[io_num] = gpio_get_level(io_num);
             last_change_time[io_num] = esp_timer_get_time() / 1000;
+            delay = 10 / portTICK_PERIOD_MS;
         }
 
         int64_t now = esp_timer_get_time() / 1000;
@@ -204,5 +206,7 @@ void gpio_event_task(void *arg)
                 }
             }
         }
+        if (!pending_change)
+            delay = portMAX_DELAY;
     }
 }

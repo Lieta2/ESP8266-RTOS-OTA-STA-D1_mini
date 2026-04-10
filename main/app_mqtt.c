@@ -27,6 +27,9 @@
    #define MAX(x,y) ((x)>(y)?(x):(y))
 #endif
 
+#ifndef BUILD_TIMESTAMP
+#define BUILD_TIMESTAMP __DATE__ " " __TIME__
+#endif
 
 static const char *TAG = "MQTT";
 static esp_mqtt_client_handle_t client;
@@ -128,6 +131,37 @@ void publish_binary_sensor_discovery(int gpio)
     }
 }
 
+void ha_publish_build_timestamp(const char *device_id)
+{
+    char topic[128];
+    char payload[512];
+
+    snprintf(topic, sizeof(topic),
+             "homeassistant/sensor/%s/build_timestamp/config",
+             device_id);
+
+    snprintf(payload, sizeof(payload),
+        "{"
+        "\"name\":\"Build Timestamp\","
+        "\"state_topic\":\"device/%s/build_timestamp\","
+        "\"unique_id\":\"%s_build_timestamp\","
+        "\"entity_category\":\"diagnostic\","
+        "\"device\":{"
+            "\"identifiers\":[\"%s\"],"
+            "\"name\":\"%s\""
+        "}"
+        "}",
+        device_id, device_id, device_id, device_id);
+
+    if (client) {
+        esp_mqtt_client_publish(client, topic, payload, 0, 1, 1);
+    }
+    snprintf(topic, sizeof(topic),
+             "device/%s/build_timestamp", device_id);
+    if (client)
+        esp_mqtt_client_publish(client, topic, BUILD_TIMESTAMP, 0, 1, 1);
+}
+
 void save_gpio_state(int gpio, int level)
 {
     nvs_handle_t nvs;
@@ -178,6 +212,8 @@ static void mqtt_event_handler(void *handler_args,
             esp_mqtt_client_subscribe(client, topic, 1);
         }
         // 🟢 Send Home Assistant discovery
+        ha_publish_build_timestamp(device_id);
+
         for (int i = 0; i < NUM_OUTPUTS; i++) {
             publish_switch_discovery(output_pins[i]);
         }
